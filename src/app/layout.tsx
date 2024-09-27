@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "../components/Navbar/Navbar";
 import { Suspense } from "react";
 import Loading from "./loading";
+import Footer from "../components/Footer/Footer";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -36,6 +37,7 @@ export default function RootLayout({
           <div className="">
             <Suspense fallback={<Loading />}>{children}</Suspense>
           </div>
+          <Footer />
         </div>
       </body>
     </html>
