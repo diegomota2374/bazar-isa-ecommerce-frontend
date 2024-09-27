@@ -1,3 +1,4 @@
+import { useFetchProducts } from "@/src/api/Products.api";
 import axios from "axios";
 import { motion, Variants } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -24,25 +25,7 @@ const menuVariants: Variants = {
 };
 
 const MenuItems: React.FC<MenuItemsProps> = ({ setIsMenuOpen }) => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [error, setError] = useState("");
-
-  const urlApi = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-  //Função para buscar produtos da API
-  const fetchProducts = async () => {
-    try {
-      const response = await axios.get(`${urlApi}/products`);
-      setProducts(response.data);
-    } catch (err) {
-      setError("Erro ao carregar produtos");
-    }
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
+  const { products, error } = useFetchProducts();
   return (
     <motion.div
       className="flex flex-col p-4 bg-blue-300 shadow-lg"
