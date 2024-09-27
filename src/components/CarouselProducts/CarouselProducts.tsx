@@ -2,10 +2,23 @@ import Slider from "react-slick";
 import CardProduct from "./../CardProduct/CardProduct";
 import { Product } from "../../api/Products.api";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { div } from "framer-motion/client";
 
 interface CarouselProps {
   products: Product[];
 }
+
+// Componente de Skeleton para o carregamento
+const SkeletonProductCard = () => {
+  return (
+    <div className="p-4 animate-pulse bg-gray-200 rounded-md h-[300px] w-full">
+      <div className="h-32 bg-gray-300 rounded-md mb-4"></div>
+      <div className="h-4 bg-gray-300 rounded-md mb-2"></div>
+      <div className="h-4 bg-gray-300 rounded-md w-3/4"></div>
+    </div>
+  );
+};
 
 // Componente para a seta "anterior"
 const PreviousArrow = (props: any) => {
@@ -36,6 +49,15 @@ const NextArrow = (props: any) => {
 };
 
 const CarouselProducts: React.FC<CarouselProps> = ({ products }) => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const settings = {
     dots: true,
     infinite: true,
@@ -63,11 +85,17 @@ const CarouselProducts: React.FC<CarouselProps> = ({ products }) => {
   return (
     <div className="p-8 overflow-hidden">
       <Slider {...settings}>
-        {products.map((product) => (
-          <div key={product._id} className="px-2">
-            <CardProduct product={product} />
-          </div>
-        ))}
+        {loading
+          ? [1, 2, 3, 4].map((_, index) => (
+              <div key={index} className="px-2">
+                <SkeletonProductCard />
+              </div>
+            ))
+          : products.map((product) => (
+              <div key={product._id} className="px-2">
+                <CardProduct product={product} />
+              </div>
+            ))}
       </Slider>
     </div>
   );
