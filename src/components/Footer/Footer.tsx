@@ -3,7 +3,7 @@ import SocialLinks from "../SocialLinks/SocialLinks";
 const Footer: React.FC = () => {
   return (
     <footer className="bg-white text-gray-900  py-2">
-      <div className="border-t-4 border-gray-400 py-3 mt-2"></div>
+      <div className="border-t-2 border-gray-400 py-3 mt-2"></div>
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
           <div className="flex justify-end ">

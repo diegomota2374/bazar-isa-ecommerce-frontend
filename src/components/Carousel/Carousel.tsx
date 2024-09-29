@@ -10,9 +10,9 @@ interface CarouselItem {
 }
 
 const carouselItems: CarouselItem[] = [
-  { id: 1, src: "/carousel/carousel-1.jpg", alt: "Slide 1" },
-  { id: 2, src: "/carousel/carousel-2.jpg", alt: "Slide 2" },
-  { id: 3, src: "/carousel/carousel-3.jpg", alt: "Slide 3" },
+  { id: 1, src: "/carousel/bazar-isa-carousel1.jpg", alt: "Slide 1" },
+  { id: 2, src: "/carousel/bazar-isa-carousel2.jpg", alt: "Slide 2" },
+  { id: 3, src: "/carousel/bazar-isa-carousel3.jpg", alt: "Slide 3" },
 ];
 
 const Carousel: React.FC = () => {
@@ -38,7 +38,7 @@ const Carousel: React.FC = () => {
   return (
     <div className="relative w-full" data-carousel="slide">
       {/* Carousel wrapper */}
-      <div className="relative h-36 overflow-hidden rounded-lg md:h-96">
+      <div className="relative h-36 overflow-hidden md:h-96">
         {carouselItems.map((item, index) => (
           <div
             key={item.id}
@@ -51,7 +51,7 @@ const Carousel: React.FC = () => {
               src={item.src}
               alt={item.alt}
               layout="fill"
-              objectFit="cover"
+              objectFit="fill"
               className="absolute block w-full h-full max-w-full"
             />
           </div>

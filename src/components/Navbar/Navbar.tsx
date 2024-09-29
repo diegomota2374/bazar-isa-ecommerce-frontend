@@ -10,7 +10,7 @@ import Image from "next/image";
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
-    <nav className="relative w-full top-0 left-0 z-50 flex items-center justify-between flex-col px-2 py-2 bg-blue-300 shadow-md">
+    <nav className="relative w-full top-0 left-0 z-50 flex items-center justify-between flex-col px-2 py-2 bg-blue-300  border-b-2 border-gray-400 shadow-md">
       <div className="flex items-center w-full justify-between px-4 ">
         <HamburgerButton
           isMenuOpen={isMenuOpen}

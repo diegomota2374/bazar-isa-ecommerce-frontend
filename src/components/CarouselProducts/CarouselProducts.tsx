@@ -3,7 +3,6 @@ import CardProduct from "./../CardProduct/CardProduct";
 import { Product } from "../../api/Products.api";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { div } from "framer-motion/client";
 
 interface CarouselProps {
   products: Product[];
@@ -62,7 +61,7 @@ const CarouselProducts: React.FC<CarouselProps> = ({ products }) => {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 2,
+    slidesToShow: 4,
     slidesToScroll: 1,
     prevArrow: <PreviousArrow />,
     nextArrow: <NextArrow />,
@@ -70,7 +69,7 @@ const CarouselProducts: React.FC<CarouselProps> = ({ products }) => {
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 2,
+          slidesToShow: 4,
         },
       },
       {
