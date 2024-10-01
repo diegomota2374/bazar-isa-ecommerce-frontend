@@ -5,8 +5,10 @@ import { useState } from "react";
 import MenuItems from "./MenuItems";
 import { FiShoppingBag, FiUser } from "react-icons/fi";
 import Image from "next/image";
+import { useCategory } from "@/src/context/CategoryContext";
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
+  const { setSelectedCategory } = useCategory();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -37,6 +39,7 @@ const Navbar = () => {
         <MenuItems
           setIsMenuOpen={setIsMenuOpen}
           hideBackgroundOnDesktop={true}
+          setSelectedCategory={setSelectedCategory}
         />
       </div>
 
@@ -66,7 +69,10 @@ const Navbar = () => {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
           >
-            <MenuItems setIsMenuOpen={setIsMenuOpen} />
+            <MenuItems
+              setIsMenuOpen={setIsMenuOpen}
+              setSelectedCategory={setSelectedCategory}
+            />
           </motion.div>
         )}
       </AnimatePresence>

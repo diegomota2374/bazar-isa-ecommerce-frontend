@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar/Navbar";
 import { Suspense } from "react";
 import Loading from "./loading";
 import Footer from "../components/Footer/Footer";
+import { CategoryProvider } from "../context/CategoryContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -24,21 +25,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="pt-br">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
-      >
-        <div className="flex flex-col min-h-screen">
-          <Navbar />
-          <div className="">
+      <body className="antialiased">
+        <CategoryProvider>
+          <div className="flex flex-col min-h-screen">
+            <Navbar />
             <Suspense fallback={<Loading />}>{children}</Suspense>
+            <Footer />
           </div>
-          <Footer />
-        </div>
+        </CategoryProvider>
       </body>
     </html>
   );

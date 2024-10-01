@@ -6,6 +6,7 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 interface MenuItemsProps {
   setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   hideBackgroundOnDesktop?: boolean;
+  setSelectedCategory: (category: string) => void;
 }
 
 const menuVariants: Variants = {
@@ -16,6 +17,7 @@ const menuVariants: Variants = {
 const MenuItems: React.FC<MenuItemsProps> = ({
   setIsMenuOpen,
   hideBackgroundOnDesktop,
+  setSelectedCategory,
 }) => {
   const { products } = useFetchProducts();
   const scrollContainer = useRef<HTMLDivElement>(null);
@@ -61,6 +63,7 @@ const MenuItems: React.FC<MenuItemsProps> = ({
               key={product._id}
               onClick={() => {
                 setIsMenuOpen(false);
+                setSelectedCategory(product.category);
               }}
               className="px-4 py-2 mx-2 text-gray-950 hover:bg-gray-400 rounded whitespace-nowrap"
             >
@@ -82,6 +85,7 @@ const MenuItems: React.FC<MenuItemsProps> = ({
             key={product._id}
             onClick={() => {
               setIsMenuOpen(false);
+              setSelectedCategory(product.category);
             }}
             className="px-4 py-2 my-1 text-gray-950 hover:bg-gray-400 rounded"
           >
