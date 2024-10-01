@@ -8,7 +8,7 @@ import Image from "next/image";
 import { useCategory } from "@/src/context/CategoryContext";
 
 const Navbar: React.FC = () => {
-  const { setSelectedCategory } = useCategory();
+  const { setSelectedCategory, setSearchTerm } = useCategory();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -31,6 +31,11 @@ const Navbar: React.FC = () => {
             width={180}
             height={40}
             priority={true}
+            onClick={() => {
+              setSelectedCategory(null);
+              setSearchTerm("");
+            }}
+            className="cursor-pointer"
           />
         </div>
       </div>
@@ -50,6 +55,7 @@ const Navbar: React.FC = () => {
           type="text"
           placeholder="Pesquisar..."
           className="flex-grow p-2 border border-gray-300 rounded w-full md:w-96"
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
 
         {/* Ícones de carrinho e usuário */}

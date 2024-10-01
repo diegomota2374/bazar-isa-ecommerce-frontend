@@ -9,31 +9,42 @@ import CardProduct from "../components/CardProduct/CardProduct";
 import { useCategory } from "../context/CategoryContext";
 
 const Home: React.FC = () => {
-  const { selectedCategory } = useCategory();
+  const { selectedCategory, searchTerm } = useCategory();
   const { products, error } = useFetchProducts();
 
   const discountedProducts = products
     .filter((product) => product.discount > 0)
     .slice(-3);
 
-  const filteredProducts = selectedCategory
-    ? products.filter((product) => product.category === selectedCategory)
-    : products;
+  const filteredProducts = products.filter((product) => {
+    const matchesCategory = selectedCategory
+      ? product.category === selectedCategory
+      : true;
+    const matchesSearchTerm = searchTerm
+      ? product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchTerm.toLowerCase())
+      : true;
+
+    return matchesCategory && matchesSearchTerm;
+  });
 
   return (
     <>
       <div className="flex-grow pb-5">
         <Carousel />
       </div>
-      {!selectedCategory && (
+      {!selectedCategory && !searchTerm && (
         <div className="pb-5">
           <CardMidHome />
         </div>
       )}
-      {selectedCategory && (
+      {(selectedCategory || searchTerm) && (
         <div className="px-5 py-5">
           <h2 className="text-2xl font-bold mb-4">
-            Produtos da categoria: {selectedCategory.toUpperCase()}
+            Produtos{" "}
+            {selectedCategory &&
+              `da categoria: ${selectedCategory.toUpperCase()} `}
+            {searchTerm && `relacionados à: "${searchTerm}"`}
           </h2>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {filteredProducts.map((product) => (
@@ -42,7 +53,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       )}
-      {!selectedCategory && (
+      {!selectedCategory && !searchTerm && (
         <>
           <CarouselProducts products={products} />
 

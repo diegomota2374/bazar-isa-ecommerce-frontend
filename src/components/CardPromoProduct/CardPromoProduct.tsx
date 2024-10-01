@@ -21,25 +21,40 @@ const CardPromoProduct: React.FC<CardPromoProps> = ({ discountedProducts }) => {
 
   useEffect(() => {
     const extractColor = (imgElement: HTMLImageElement, index: number) => {
-      const color = colorThief.getColor(imgElement);
-      const bgColor = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
-      const textColor = isDarkColor(color) ? "white" : "black";
+      try {
+        const color = colorThief.getColor(imgElement);
+        const bgColor = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+        const textColor = isDarkColor(color) ? "white" : "black";
 
-      // Atualizar a cor de fundo e a cor do texto
-      setBgColors((prevColors) => {
-        if (prevColors[index] !== bgColor) {
+        // Atualizar a cor de fundo e a cor do texto
+        setBgColors((prevColors) => {
+          if (prevColors[index] !== bgColor) {
+            const newColors = [...prevColors];
+            newColors[index] = bgColor;
+            return newColors;
+          }
+          return prevColors;
+        });
+
+        setTextColors((prevTextColors) => {
+          const newTextColors = [...prevTextColors];
+          newTextColors[index] = textColor;
+          return newTextColors;
+        });
+      } catch (error) {
+        console.error("Error extracting color:", error);
+        // Defina uma cor de fallback se a extração de cor falhar
+        setBgColors((prevColors) => {
           const newColors = [...prevColors];
-          newColors[index] = bgColor;
+          newColors[index] = "gray"; // Cor de fallback
           return newColors;
-        }
-        return prevColors;
-      });
-
-      setTextColors((prevTextColors) => {
-        const newTextColors = [...prevTextColors];
-        newTextColors[index] = textColor;
-        return newTextColors;
-      });
+        });
+        setTextColors((prevTextColors) => {
+          const newTextColors = [...prevTextColors];
+          newTextColors[index] = "black"; // Cor de fallback
+          return newTextColors;
+        });
+      }
     };
 
     const handleLoad = (event: Event, index: number) => {
