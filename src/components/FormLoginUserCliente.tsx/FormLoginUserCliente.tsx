@@ -2,12 +2,13 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import FormRegisterUserClient from "../FormRegisterUserClient/FormRegisterUserClient";
 import { toast } from "sonner";
+import { AuthContext } from "@/src/context/AuthContext";
 
 interface FormData {
   email: string;
@@ -25,6 +26,8 @@ const FormLoginUserCliente: React.FC = () => {
 
   const [emailExists, setEmailExists] = useState(false);
   const [emailExistsForm, setEmailExistsForm] = useState(true);
+
+  const { login: loginContext } = useContext(AuthContext);
 
   const urlApi = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -58,6 +61,7 @@ const FormLoginUserCliente: React.FC = () => {
         const { token } = response.data;
 
         localStorage.setItem("token", token);
+        loginContext(token);
 
         return true;
       }
@@ -74,10 +78,7 @@ const FormLoginUserCliente: React.FC = () => {
       const loginSuccess = await login(data.email, data.password);
       if (loginSuccess) {
         toast.success("Login realizado com sucesso!");
-
-        if (typeof window !== "undefined") {
-          router.push("/");
-        }
+        router.replace("/");
       } else {
         toast.error("Erro ao fazer login. Verifique suas credenciais.");
       }
@@ -85,7 +86,6 @@ const FormLoginUserCliente: React.FC = () => {
       if (emailExists) {
         setEmailExists(true);
       } else {
-        toast.error("E-mail não encontrado.");
         setEmailExists(false);
         setEmailExistsForm(false);
       }

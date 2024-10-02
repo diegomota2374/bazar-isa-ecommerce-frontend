@@ -1,7 +1,10 @@
 "use client";
 
-import React from "react";
+import { AuthContext } from "@/src/context/AuthContext";
+import { useRouter } from "next/navigation";
+import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 interface FormData {
   name: string;
@@ -20,9 +23,47 @@ const FormRegisterUserClient: React.FC = () => {
     watch,
   } = useForm<FormData>();
 
+  const router = useRouter();
+  const { login } = useContext(AuthContext);
+
+  const urlApi = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+  // Função para verificar se o email já está registrado
+  const checkEmailExists = async (email: string) => {
+    try {
+      const response = await fetch(`${urlApi}/clients/check-email-client`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data.exists; // true se o email já existe
+      } else {
+        toast.error("Erro ao verificar o e-mail.");
+        return false;
+      }
+    } catch (error) {
+      console.error("Erro ao verificar o e-mail:", error);
+      toast.error("Erro ao verificar o e-mail.");
+      return false;
+    }
+  };
+
   const onSubmit = async (data: FormData) => {
     try {
-      const response = await fetch("/api/clients", {
+      // Verifica se o email já existe antes de continuar
+      const emailExists = await checkEmailExists(data.email);
+
+      if (emailExists) {
+        toast.error("Este e-mail já está registrado. Tente outro.");
+        return;
+      }
+
+      const response = await fetch(`${urlApi}/clients`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -31,13 +72,17 @@ const FormRegisterUserClient: React.FC = () => {
       });
 
       if (response.ok) {
-        alert("Conta criada com sucesso!");
+        const { token } = await response.json();
+        localStorage.setItem("token", token);
+        login(token);
+        toast.success("Conta criada com sucesso!");
+        router.replace("/");
       } else {
-        alert("Erro ao criar conta.");
+        toast.error("Erro ao criar conta.");
       }
     } catch (error) {
       console.error("Erro ao criar conta:", error);
-      alert("Erro ao criar conta.");
+      toast.error(`Erro ao criar conta: ${error}`);
     }
   };
 
