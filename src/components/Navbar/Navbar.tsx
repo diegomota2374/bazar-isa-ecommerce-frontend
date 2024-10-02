@@ -6,6 +6,7 @@ import MenuItems from "./MenuItems";
 import { FiShoppingBag, FiUser } from "react-icons/fi";
 import Image from "next/image";
 import { useCategory } from "@/src/context/CategoryContext";
+import Link from "next/link";
 
 const Navbar: React.FC = () => {
   const { setSelectedCategory, setSearchTerm } = useCategory();
@@ -25,18 +26,20 @@ const Navbar: React.FC = () => {
 
         {/* Logo */}
         <div className="flex items-center mt-[-10px]  md:mt-[-20px]">
-          <Image
-            src="/logo-bazar-isa.svg"
-            alt="Logo Bazar Isa"
-            width={180}
-            height={40}
-            priority={true}
-            onClick={() => {
-              setSelectedCategory(null);
-              setSearchTerm("");
-            }}
-            className="cursor-pointer"
-          />
+          <Link href={"/"} passHref>
+            <Image
+              src="/logo-bazar-isa.svg"
+              alt="Logo Bazar Isa"
+              width={180}
+              height={40}
+              priority={true}
+              onClick={() => {
+                setSelectedCategory(null);
+                setSearchTerm("");
+              }}
+              className="cursor-pointer"
+            />
+          </Link>
         </div>
       </div>
 
@@ -61,7 +64,9 @@ const Navbar: React.FC = () => {
         {/* Ícones de carrinho e usuário */}
         <div className="flex items-center md:ml-4">
           <FiShoppingBag className="text-gray-950 text-2xl md:text-3xl ml-2 cursor-pointer" />
-          <FiUser className="text-gray-950 text-2xl md:text-3xl ml-4 cursor-pointer" />
+          <Link href="/UserCliente" passHref>
+            <FiUser className="text-gray-950 text-2xl md:text-3xl ml-4 cursor-pointer" />
+          </Link>
         </div>
       </div>
 
