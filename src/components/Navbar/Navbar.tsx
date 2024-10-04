@@ -102,7 +102,14 @@ const Navbar: React.FC = () => {
                         Produtos Favoritos
                       </p>
                     </Link>
-                    <Link href="/edit-profile" passHref>
+                    <Link
+                      href={{
+                        pathname: "/UserCliente",
+                        query: { mode: "edit" },
+                      }}
+                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                      passHref
+                    >
                       <p className="block px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer">
                         Editar Dados
                       </p>

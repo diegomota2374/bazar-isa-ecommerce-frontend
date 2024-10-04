@@ -4,7 +4,7 @@
 
 import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import FormRegisterUserClient from "../FormRegisterUserClient/FormRegisterUserClient";
 import { toast } from "sonner";
@@ -26,10 +26,14 @@ const FormLoginUserCliente: React.FC = () => {
 
   const [emailExists, setEmailExists] = useState(false);
   const [emailExistsForm, setEmailExistsForm] = useState(true);
+  const [emailForReset, setEmailForReset] = useState("");
 
   const { login: loginContext } = useContext(AuthContext);
 
   const urlApi = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+  const searchParams = useSearchParams();
+  const mode = searchParams.get("mode");
 
   const checkEmailExists = async (email: string) => {
     try {
@@ -58,10 +62,11 @@ const FormLoginUserCliente: React.FC = () => {
         password,
       });
       if (response.status === 200) {
-        const { token } = response.data;
+        const { token, client } = response.data;
 
         localStorage.setItem("token", token);
-        loginContext(token);
+        localStorage.setItem("client", JSON.stringify(client));
+        loginContext(token, client);
 
         return true;
       }
@@ -85,6 +90,7 @@ const FormLoginUserCliente: React.FC = () => {
     } else {
       if (emailExists) {
         setEmailExists(true);
+        setEmailForReset(data.email);
       } else {
         setEmailExists(false);
         setEmailExistsForm(false);
@@ -92,9 +98,25 @@ const FormLoginUserCliente: React.FC = () => {
     }
   };
 
+  // Função para lidar com a solicitação de redefinição de senha
+  const handleForgotPassword = async () => {
+    try {
+      const response = await axios.post(`${urlApi}/clients/forgot-password`, {
+        email: emailForReset,
+      });
+      if (response.status === 200) {
+        toast.success(
+          "Email de recuperação enviado! Verifique sua caixa de entrada."
+        );
+      }
+    } catch (error) {
+      toast.error(`Erro ao enviar email de recuperação: ${error}`);
+    }
+  };
+
   return (
     <>
-      {emailExistsForm === false ? (
+      {emailExistsForm === false || mode === "edit" ? (
         <FormRegisterUserClient />
       ) : (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -133,8 +155,13 @@ const FormLoginUserCliente: React.FC = () => {
                       },
                     })}
                     className={`w-full p-2 border ${
-                      errors.email ? "border-red-500" : "border-gray-300"
+                      errors.email
+                        ? "border-red-500"
+                        : emailExists
+                        ? "border-gray-300 bg-gray-100 cursor-not-allowed"
+                        : "border-gray-300"
                     } rounded mt-1`}
+                    readOnly={emailExists}
                   />
 
                   {/* Exibição do erro de validação */}
@@ -180,6 +207,15 @@ const FormLoginUserCliente: React.FC = () => {
                 >
                   Acessar
                 </button>
+                {emailExists && (
+                  <button
+                    type="button"
+                    onClick={() => handleForgotPassword()}
+                    className="text-blue-500 mt-2"
+                  >
+                    Esqueci a senha
+                  </button>
+                )}
               </form>
             </div>
           </div>
