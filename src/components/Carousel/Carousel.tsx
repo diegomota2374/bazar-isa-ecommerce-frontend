@@ -50,9 +50,8 @@ const Carousel: React.FC = () => {
             <Image
               src={item.src}
               alt={item.alt}
-              layout="fill"
-              objectFit="fill"
-              className="absolute block w-full h-full max-w-full"
+              fill
+              className="absolute block w-full h-full object-fill"
             />
           </div>
         ))}

@@ -41,20 +41,21 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Logo */}
-        <div className="flex items-center mt-[-10px]  md:mt-[-20px]">
+        <div className="flex items-center">
           <Link href={"/"} passHref>
-            <Image
-              src="/logo-bazar-isa.svg"
-              alt="Logo Bazar Isa"
-              width={180}
-              height={40}
-              priority={true}
-              onClick={() => {
-                setSelectedCategory(null);
-                setSearchTerm("");
-              }}
-              className="cursor-pointer"
-            />
+            <div className="relative w-[180px] h-[100px]">
+              <Image
+                src="/logo-bazar-isa.svg"
+                alt="Logo Bazar Isa"
+                fill
+                priority={true}
+                onClick={() => {
+                  setSelectedCategory(null);
+                  setSearchTerm("");
+                }}
+                className="cursor-pointer object-contain"
+              />
+            </div>
           </Link>
         </div>
       </div>

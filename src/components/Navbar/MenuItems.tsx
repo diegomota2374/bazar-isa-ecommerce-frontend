@@ -65,7 +65,7 @@ const MenuItems: React.FC<MenuItemsProps> = ({
                 setIsMenuOpen(false);
                 setSelectedCategory(product.category);
               }}
-              className="px-4 py-2 mx-2 text-gray-950 hover:bg-gray-400 rounded whitespace-nowrap"
+              className="px-4 py-2 mx-2 text-gray-950 hover:bg-gray-100 rounded whitespace-nowrap"
             >
               {product.category.toUpperCase()}
             </button>
@@ -87,7 +87,7 @@ const MenuItems: React.FC<MenuItemsProps> = ({
               setIsMenuOpen(false);
               setSelectedCategory(product.category);
             }}
-            className="px-4 py-2 my-1 text-gray-950 hover:bg-gray-400 rounded"
+            className="px-4 py-2 my-1 text-gray-950 hover:bg-gray-100 rounded"
           >
             {product.category.toUpperCase()}
           </button>
