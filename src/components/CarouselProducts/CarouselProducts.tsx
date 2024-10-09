@@ -3,6 +3,7 @@ import CardProduct from "./../CardProduct/CardProduct";
 import { Product } from "../../api/Products.api";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { useEffect, useState } from "react";
+import { useFavorites } from "@/src/context/FavoriteContext";
 
 interface CarouselProps {
   products: Product[];
@@ -24,7 +25,7 @@ const PreviousArrow = (props: any) => {
   const { className, onClick } = props;
   return (
     <button
-      className={`${className} slick-prev-custom  `}
+      className={`${className} slick-prev-custom`}
       onClick={onClick}
       aria-label="Previous"
     >
@@ -38,7 +39,7 @@ const NextArrow = (props: any) => {
   const { className, onClick } = props;
   return (
     <button
-      className={`${className} slick-next-custom  `}
+      className={`${className} slick-next-custom`}
       onClick={onClick}
       aria-label="Next"
     >
@@ -49,6 +50,7 @@ const NextArrow = (props: any) => {
 
 const CarouselProducts: React.FC<CarouselProps> = ({ products }) => {
   const [loading, setLoading] = useState(true);
+  const { favoritedProducts, toggleFavorite } = useFavorites();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -92,7 +94,11 @@ const CarouselProducts: React.FC<CarouselProps> = ({ products }) => {
             ))
           : products.map((product) => (
               <div key={product._id} className="px-2">
-                <CardProduct product={product} />
+                <CardProduct
+                  product={product}
+                  isFavorited={!!favoritedProducts[product._id]} // Verifica se o produto é favorito
+                  onFavoriteToggle={toggleFavorite} // Passa a função para alternar favoritos
+                />
               </div>
             ))}
       </Slider>

@@ -25,7 +25,7 @@ const Navbar: React.FC = () => {
     logout();
     toast.success("Foi feito o logout com sucesso!");
     setIsUserMenuOpen(false);
-    router.replace("/");
+    window.location.reload();
   };
 
   return (

@@ -7,10 +7,12 @@ import Carousel from "../components/Carousel/Carousel";
 import CarouselProducts from "../components/CarouselProducts/CarouselProducts";
 import CardProduct from "../components/CardProduct/CardProduct";
 import { useCategory } from "../context/CategoryContext";
+import { useFavorites } from "../context/FavoriteContext";
 
 const Home: React.FC = () => {
   const { selectedCategory, searchTerm } = useCategory();
   const { products, error } = useFetchProducts();
+  const { favoritedProducts, toggleFavorite } = useFavorites();
 
   const discountedProducts = products
     .filter((product) => product.discount > 0)
@@ -48,7 +50,12 @@ const Home: React.FC = () => {
           </h2>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {filteredProducts.map((product) => (
-              <CardProduct key={product._id} product={product} />
+              <CardProduct
+                key={product._id}
+                product={product}
+                isFavorited={!!favoritedProducts[product._id]} // Passa se está favoritado
+                onFavoriteToggle={toggleFavorite}
+              />
             ))}
           </div>
         </div>

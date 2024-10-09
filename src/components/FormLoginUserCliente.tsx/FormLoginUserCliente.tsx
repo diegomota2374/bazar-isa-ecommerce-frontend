@@ -9,6 +9,7 @@ import axios from "axios";
 import FormRegisterUserClient from "../FormRegisterUserClient/FormRegisterUserClient";
 import { toast } from "sonner";
 import { AuthContext } from "@/src/context/AuthContext";
+import { useFavorites } from "@/src/context/FavoriteContext";
 
 interface FormData {
   email: string;
@@ -27,6 +28,8 @@ const FormLoginUserCliente: React.FC = () => {
   const [emailExists, setEmailExists] = useState(false);
   const [emailExistsForm, setEmailExistsForm] = useState(true);
   const [emailForReset, setEmailForReset] = useState("");
+
+  const { loadFavorites } = useFavorites();
 
   const { login: loginContext } = useContext(AuthContext);
 
@@ -83,6 +86,7 @@ const FormLoginUserCliente: React.FC = () => {
       const loginSuccess = await login(data.email, data.password);
       if (loginSuccess) {
         toast.success("Login realizado com sucesso!");
+        await loadFavorites();
         router.replace("/");
       } else {
         toast.error("Erro ao fazer login. Verifique suas credenciais.");

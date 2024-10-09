@@ -8,6 +8,7 @@ import Footer from "../components/Footer/Footer";
 import { CategoryProvider } from "../context/CategoryContext";
 import { Toaster } from "sonner";
 import { AuthProvider } from "../context/AuthContext";
+import { FavoriteProvider } from "../context/FavoriteContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -34,14 +35,16 @@ export default function RootLayout({
     <html lang="pt-br">
       <body className="antialiased">
         <AuthProvider>
-          <CategoryProvider>
-            <div className="flex flex-col min-h-screen">
-              <Toaster richColors position="top-center" />
-              <Navbar />
-              <Suspense fallback={<Loading />}>{children}</Suspense>
-              <Footer />
-            </div>
-          </CategoryProvider>
+          <FavoriteProvider>
+            <CategoryProvider>
+              <div className="flex flex-col min-h-screen">
+                <Toaster richColors position="top-center" />
+                <Navbar />
+                <Suspense fallback={<Loading />}>{children}</Suspense>
+                <Footer />
+              </div>
+            </CategoryProvider>
+          </FavoriteProvider>
         </AuthProvider>
       </body>
     </html>
