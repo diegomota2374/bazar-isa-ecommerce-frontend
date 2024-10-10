@@ -1,5 +1,6 @@
 import { useFetchProducts } from "@/src/api/Products.api";
 import { motion, Variants } from "framer-motion";
+import Link from "next/link";
 import { useRef } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
@@ -33,6 +34,11 @@ const MenuItems: React.FC<MenuItemsProps> = ({
     }
   };
 
+  // Filtra as categorias únicas
+  const uniqueCategories = Array.from(
+    new Set(products.map((product) => product.category))
+  );
+
   return (
     <motion.div
       className={`flex items-center justify-center p-4 ${
@@ -58,17 +64,18 @@ const MenuItems: React.FC<MenuItemsProps> = ({
           className="flex items-center justify-center overflow-x-auto whitespace-nowrap scrollbar-hide"
           ref={scrollContainer}
         >
-          {products.map((product) => (
-            <button
-              key={product._id}
-              onClick={() => {
-                setIsMenuOpen(false);
-                setSelectedCategory(product.category);
-              }}
-              className="px-4 py-2 mx-2 text-gray-950 hover:bg-gray-100 rounded whitespace-nowrap"
-            >
-              {product.category.toUpperCase()}
-            </button>
+          {uniqueCategories.map((category) => (
+            <Link key={category} href="/" passHref>
+              <button
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  setSelectedCategory(category);
+                }}
+                className="px-4 py-2 mx-2 text-gray-950 hover:bg-gray-100 rounded whitespace-nowrap"
+              >
+                {category.toUpperCase()}
+              </button>
+            </Link>
           ))}
         </div>
 
@@ -80,17 +87,18 @@ const MenuItems: React.FC<MenuItemsProps> = ({
 
       {/* Layout simples para telas menores (mobile) */}
       <div className="md:hidden flex flex-col">
-        {products.map((product) => (
-          <button
-            key={product._id}
-            onClick={() => {
-              setIsMenuOpen(false);
-              setSelectedCategory(product.category);
-            }}
-            className="px-4 py-2 my-1 text-gray-950 hover:bg-gray-100 rounded"
-          >
-            {product.category.toUpperCase()}
-          </button>
+        {uniqueCategories.map((category) => (
+          <Link key={category} href="/" passHref>
+            <button
+              onClick={() => {
+                setIsMenuOpen(false);
+                setSelectedCategory(category);
+              }}
+              className="px-4 py-2 my-1 text-gray-950 hover:bg-gray-100 rounded"
+            >
+              {category.toUpperCase()}
+            </button>
+          </Link>
         ))}
       </div>
     </motion.div>

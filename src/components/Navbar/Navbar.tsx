@@ -7,17 +7,14 @@ import { FiShoppingBag, FiUser } from "react-icons/fi";
 import Image from "next/image";
 import { useCategory } from "@/src/context/CategoryContext";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { AuthContext } from "@/src/context/AuthContext";
 import { FaUserCheck } from "react-icons/fa";
 
 const Navbar: React.FC = () => {
-  const { setSelectedCategory, setSearchTerm } = useCategory();
+  const { setSelectedCategory, searchTerm, setSearchTerm } = useCategory();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-
-  const router = useRouter();
 
   const { isLoggedIn, logout } = useContext(AuthContext);
 
@@ -28,12 +25,19 @@ const Navbar: React.FC = () => {
     window.location.reload();
   };
 
+  const toggleUserMenu = () => {
+    setIsUserMenuOpen((prevState) => {
+      if (!prevState && isMenuOpen) setIsMenuOpen(false);
+      return !prevState;
+    });
+  };
+
   return (
     <nav className="relative w-full top-0 left-0 z-50 flex flex-col lg:flex-row lg:items-center lg:justify-between px-2 py-2 bg-blue-300  shadow-md">
       {/* Primeira linha: Logo e ícones */}
       <div className="flex items-center justify-between w-full md:w-auto px-4 md:px-6">
         {/* Botão Hamburger - visível apenas em telas menores */}
-        <div className="lg:hidden">
+        <div className="lg:hidden flex-shrink-0">
           <HamburgerButton
             isMenuOpen={isMenuOpen}
             setIsMenuOpen={setIsMenuOpen}
@@ -41,9 +45,9 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Logo */}
-        <div className="flex items-center">
+        <div className="flex-grow flex justify-end mt-[-10px]">
           <Link href={"/"} passHref>
-            <div className="relative w-[180px] h-[100px]">
+            <div className="relative w-[150px] h-[50px] ">
               <Image
                 src="/logo-bazar-isa.svg"
                 alt="Logo Bazar Isa"
@@ -53,7 +57,7 @@ const Navbar: React.FC = () => {
                   setSelectedCategory(null);
                   setSearchTerm("");
                 }}
-                className="cursor-pointer object-contain"
+                className="cursor-pointer object-cover"
               />
             </div>
           </Link>
@@ -75,6 +79,7 @@ const Navbar: React.FC = () => {
           type="text"
           placeholder="Pesquisar..."
           className="flex-grow p-2 border border-gray-300 rounded w-full md:w-96"
+          value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
 
@@ -85,7 +90,7 @@ const Navbar: React.FC = () => {
             <>
               <FaUserCheck
                 className="text-gray-950 text-2xl md:text-3xl ml-4 cursor-pointer"
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                onClick={toggleUserMenu}
               />
 
               {/* Menu suspenso quando o usuário está logado */}
@@ -98,7 +103,11 @@ const Navbar: React.FC = () => {
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Link href="/favorites" passHref>
+                    <Link
+                      href="/Favorites"
+                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                      passHref
+                    >
                       <p className="block px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer">
                         Produtos Favoritos
                       </p>
@@ -139,7 +148,7 @@ const Navbar: React.FC = () => {
           <motion.div
             className="absolute top-14 left-0 w-full bg-gray-950 shadow-lg md:hidden"
             initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 80 }}
+            animate={{ opacity: 1, y: 50 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
           >
