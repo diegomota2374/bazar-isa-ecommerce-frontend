@@ -64,7 +64,7 @@ const Home: React.FC = () => {
         <>
           <CarouselProducts products={products} />
 
-          <div className="py-5 px-2 mt-3 border-t-2  border-blue-300">
+          <div className="p-10 mt-3 border-t-2  border-blue-300">
             <CardPromoProduct discountedProducts={discountedProducts} />
           </div>
         </>

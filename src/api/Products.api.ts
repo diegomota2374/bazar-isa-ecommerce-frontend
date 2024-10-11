@@ -7,17 +7,18 @@ export interface Product {
   description: string;
   category: string;
   price: number;
+  size: string;
   discount: number;
   status: string;
   state: string;
   imgProduct: FileList;
 }
 
+const urlApi = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export const useFetchProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState<string | null>(null);
-
-  const urlApi = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   //Função para buscar produtos da API
   const fetchProducts = async () => {
@@ -34,4 +35,30 @@ export const useFetchProducts = () => {
   }, []);
 
   return { products, error };
+};
+
+export const useFetchProductById = (id: string) => {
+  const [product, setProduct] = useState<Product | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await axios.get(`${urlApi}/products/${id}`);
+        setProduct(res.data);
+      } catch (err) {
+        if (axios.isAxiosError(err)) {
+          setError(err.response?.data?.message || "Erro ao buscar o produto.");
+        } else {
+          setError("Erro desconhecido");
+        }
+      }
+    };
+
+    if (id) {
+      fetchProduct();
+    }
+  }, [id]);
+
+  return { product, error };
 };

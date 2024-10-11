@@ -5,6 +5,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { FaHeart } from "react-icons/fa";
+import Link from "next/link";
 
 interface CardProductProps {
   product: Product;
@@ -82,21 +83,35 @@ const CardProduct: React.FC<CardProductProps> = ({
           )}
         </motion.button>
       </div>
-      {/* imagem do produto */}
-      <div className="relative h-48 w-full">
-        <img
-          src={imageUrl}
-          alt={product.name}
-          className="w-full h-48 object-cover rounded-t-lg"
-        />
-      </div>
+      <Link href={`/Produto/${product._id}`} passHref>
+        {/* imagem do produto */}
+        <div className="relative h-48 w-full">
+          <img
+            src={imageUrl}
+            alt={product.name}
+            className="w-full h-48 object-cover rounded-t-lg"
+          />
+        </div>
+      </Link>
       {/* conteudo do card */}
       <div className="p-4">
         <h2 className="text-lg font-semibold text-gray-800 line-clamp-2">
-          {product.description}
+          {product.name}
         </h2>
+        <p className="text-sm font-semibold text-gray-500 line-clamp-2">
+          {product.description}
+        </p>
         <div className="mt-2 text-lg font-bold text-blue-400">
-          ${product.price.toFixed(2)}
+          {product.discount > 0 ? (
+            <div className="text-red-500 text-sm">
+              <span className="line-through text-gray-500">
+                R$ {product.price.toFixed(2)}
+              </span>{" "}
+              R$ {(product.price * (1 - product.discount / 100)).toFixed(2)}
+            </div>
+          ) : (
+            <div className="text-xl">R$ {product.price.toFixed(2)}</div>
+          )}
         </div>
       </div>
     </div>
