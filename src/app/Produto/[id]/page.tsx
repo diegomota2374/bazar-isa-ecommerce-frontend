@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useFetchProductById } from "../../../api/Products.api";
 import { useFavorites } from "../../../context/FavoriteContext";
 import { motion } from "framer-motion";
@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import Modal from "react-modal";
 import { useBag } from "@/src/context/BagContext";
+import axios from "axios";
 
 const ProductDetails: React.FC = () => {
   const { id } = useParams();
@@ -20,6 +21,11 @@ const ProductDetails: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProductInBag, setIsProductInBag] = useState(false);
+  const [total, setTotal] = useState(0);
+
+  const router = useRouter();
+
+  const urlApi = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -34,6 +40,54 @@ const ProductDetails: React.FC = () => {
       setIsProductInBag(!!bagProducts[product._id]);
     }
   }, [product, bagProducts]);
+
+  const fetchProductById = async (productId: string) => {
+    try {
+      const response = await axios.get(`${urlApi}/products/${productId}`);
+      return response.data; // Return the entire data, not just a `product` key
+    } catch (error) {
+      console.error("Error fetching product by ID:", productId, error);
+      return null;
+    }
+  };
+
+  const calculateTotal = async () => {
+    let total = 0;
+    const productIds = Object.keys(bagProducts);
+
+    if (productIds.length === 0) {
+      console.warn("No products in the bag.");
+      return;
+    }
+
+    // Fetch product details
+    try {
+      const products = await Promise.all(
+        productIds.map(async (productId) => {
+          const product = await fetchProductById(productId);
+          return product;
+        })
+      );
+
+      products.forEach((product) => {
+        if (product) {
+          const price =
+            product.discount && product.discount > 0
+              ? product.price * (1 - product.discount / 100)
+              : product.price;
+          total += price;
+        }
+      });
+
+      setTotal(total); // Update the total state
+    } catch (error) {
+      console.error("Error calculating total:", error);
+    }
+  };
+
+  useEffect(() => {
+    calculateTotal();
+  }, [bagProducts]);
 
   if (error) {
     return <div>Erro ao carregar o produto.</div>;
@@ -62,13 +116,11 @@ const ProductDetails: React.FC = () => {
   };
 
   const handleAddToBag = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      toast("Você precisa estar logado para adicionar a sacola.");
-    } else {
-      await addToBag(product._id);
-      setIsModalOpen(true);
-    }
+    await addToBag(product);
+    setIsModalOpen(true);
+  };
+  const goToCart = () => {
+    router.push("/Cart");
   };
 
   return (
@@ -155,9 +207,9 @@ const ProductDetails: React.FC = () => {
                   ? "bg-green-500 hover:bg-green-600"
                   : "bg-blue-400 hover:bg-blue-500"
               } text-white px-4 py-2 rounded mt-4`}
-              onClick={handleAddToBag}
+              onClick={isProductInBag ? goToCart : handleAddToBag}
             >
-              {isProductInBag ? "Ver Sacola" : "Adicionar à Sacola"}
+              {isProductInBag ? "Ver na Sacola" : "Adicionar à Sacola"}
             </button>
           </div>
         </div>
@@ -170,7 +222,7 @@ const ProductDetails: React.FC = () => {
         className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" // Fundo escuro e centralização
         overlayClassName="fixed inset-0 bg-black bg-opacity-10" // Estilo de overlay
       >
-        <div className="bg-white rounded-lg p-6 w-11/12 md:w-3/4 lg:w-1/2">
+        <div className="bg-white rounded-lg p-6 w-11/12 md:w-3/4 lg:w-1/3">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">
               Produto adicionado à sacola
@@ -210,6 +262,13 @@ const ProductDetails: React.FC = () => {
               ) : (
                 <div className="text-xl">R$ {product.price.toFixed(2)}</div>
               )}
+              {/* Cálculo do valor total */}
+              <div className="mt-4">
+                <h3 className="text-lg font-semibold">Total da Sacola</h3>
+                <span className="text-xl font-bold text-blue-500">
+                  R$ {total.toFixed(2)}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -223,11 +282,11 @@ const ProductDetails: React.FC = () => {
             <button
               onClick={() => {
                 setIsModalOpen(false);
-                window.location.href = "/bag"; // Redireciona para a página da sacola
+                goToCart();
               }}
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             >
-              Ver sacola
+              Ver na Sacola
             </button>
           </div>
         </div>

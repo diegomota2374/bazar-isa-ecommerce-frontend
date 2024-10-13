@@ -10,6 +10,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { AuthContext } from "@/src/context/AuthContext";
 import { FaUserCheck } from "react-icons/fa";
+import { useBag } from "@/src/context/BagContext";
 
 const Navbar: React.FC = () => {
   const { setSelectedCategory, searchTerm, setSearchTerm } = useCategory();
@@ -17,6 +18,10 @@ const Navbar: React.FC = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   const { isLoggedIn, logout } = useContext(AuthContext);
+  const { bagProducts } = useBag();
+
+  // Contar quantos itens estão na sacola
+  const itemCount = Object.keys(bagProducts).length;
 
   const handleLogout = () => {
     logout();
@@ -85,7 +90,17 @@ const Navbar: React.FC = () => {
 
         {/* Ícones de carrinho e usuário */}
         <div className="flex items-center md:ml-4">
-          <FiShoppingBag className="text-gray-950 text-2xl md:text-3xl ml-2 cursor-pointer" />
+          <Link href="/Cart" passHref>
+            <div className="relative">
+              <FiShoppingBag className="text-gray-950 text-2xl md:text-3xl ml-2 cursor-pointer" />
+              {/* Bolinha de notificação */}
+              {itemCount > 0 && (
+                <div className="absolute -bottom-1 -right-1 font-bold text-blue-500 bg-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
+                  {itemCount}
+                </div>
+              )}
+            </div>
+          </Link>
           {isLoggedIn ? (
             <>
               <FaUserCheck

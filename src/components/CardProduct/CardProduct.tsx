@@ -94,17 +94,15 @@ const CardProduct: React.FC<CardProductProps> = ({
         </div>
       </Link>
       {/* conteudo do card */}
-      <div className="p-4">
+      <div className=" p-4">
         <h2 className="text-lg font-semibold text-gray-800 line-clamp-2">
           {product.name}
         </h2>
-        <p className="text-sm font-semibold text-gray-500 line-clamp-2">
-          {product.description}
-        </p>
+
         <div className="mt-2 text-lg font-bold text-blue-400">
           {product.discount > 0 ? (
-            <div className="text-red-500 text-sm">
-              <span className="line-through text-gray-500">
+            <div className="flex flex-col text-red-500 text-lg">
+              <span className="line-through text-gray-500 text-sm">
                 R$ {product.price.toFixed(2)}
               </span>{" "}
               R$ {(product.price * (1 - product.discount / 100)).toFixed(2)}
